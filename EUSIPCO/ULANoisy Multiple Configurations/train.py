@@ -1,0 +1,97 @@
+import torch 
+import torch.nn as nn
+import torch.optim as optim
+import argparse
+
+from torch.utils.data import DataLoader
+from sklearn.model_selection import train_test_split
+
+from ArrayModel import *
+from utils import *
+from models import *
+from tqdm import tqdm
+
+dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+parser = argparse.ArgumentParser(description='Train ULA models with different SNR values.')
+parser.add_argument('--snr', type=int, default=0, help='Signal-to-noise ratio')
+args = parser.parse_args()
+
+m = 8 
+d = 3
+t = 200
+snr = args.snr
+distance = 0.1
+lamda = 0.2
+
+array = ULA(m, lamda)
+array.build_sensor_positions(distance)
+
+seeds = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190]
+
+for seed in seeds:
+
+    torch.manual_seed(seed)
+    del_x = torch.rand(m) * 0.04 - 0.02
+    del_y = torch.zeros(m)
+    array.pertube(del_x, del_y)
+    
+    torch.seed()
+
+    array_nominal = ULA(m, lamda)
+    array_nominal.build_sensor_positions(distance)
+    array_nominal.build_array_manifold()
+
+    path = 'saved_models/'
+
+    n = 20000
+    lr = 1e-2
+    wd = 1e-9
+    batchSize = 256
+    nbEpoches = 250
+
+    train_func = RMSPE(d, device=dev)
+    valid_func = RMSPE(d, device=dev)
+
+
+    observations, angles = generate_data(n, t, d, snr, snr, array, False, False)
+    x_train, x_valid, theta_train, theta_valid = train_test_split(observations, angles, test_size=0.2)
+    train_set = DATASET(x_train, theta_train)
+    valid_set = DATASET(x_valid, theta_valid)
+    train_loader = DataLoader(train_set, batch_size=batchSize, shuffle=True)
+    valid_loader = DataLoader(valid_set, batch_size=batchSize, shuffle=False)
+
+    da_music = DA_MUSIC(m, d, array_nominal, dev)
+
+    train(da_music, nbEpoches, lr, wd, 
+            train_loader, valid_loader, 
+            path+'da_music_'+str(snr)+'dB_seed_'+str(seed)+'.pth', 
+            train_func, valid_func)
+
+
+    observations, angles = generate_data(n, t, d, snr, snr, array, False, False)
+    x_train, x_valid, theta_train, theta_valid = train_test_split(observations, angles, test_size=0.2)
+    train_set = DATASET(x_train, theta_train)
+    valid_set = DATASET(x_valid, theta_valid)
+    train_loader = DataLoader(train_set, batch_size=batchSize, shuffle=True)
+    valid_loader = DataLoader(valid_set, batch_size=batchSize, shuffle=False)
+
+    da_music_v2 = DA_MUSIC_v2(m, d, array_nominal, dev)
+
+    train(da_music_v2, nbEpoches, lr, wd, 
+            train_loader, valid_loader, 
+            path+'da_music_v2_'+str(snr)+'dB_seed_'+str(seed)+'.pth', 
+            train_func, valid_func)
+
+    observations, angles = generate_data(n, t, d, snr, snr, array, False, False)
+    x_train, x_valid, theta_train, theta_valid = train_test_split(observations, angles, test_size=0.2)
+    train_set = DATASET(x_train, theta_train)
+    valid_set = DATASET(x_valid, theta_valid)
+    train_loader = DataLoader(train_set, batch_size=batchSize, shuffle=True)
+    valid_loader = DataLoader(valid_set, batch_size=batchSize, shuffle=False)
+
+    rnn = RNN(m, d, dev)
+
+    train(rnn, nbEpoches, lr, wd, train_loader, valid_loader, 
+            path+'rnn_'+str(snr)+'dB_seed_'+str(seed)+'.pth', 
+            train_func, valid_func)

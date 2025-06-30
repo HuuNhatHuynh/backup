@@ -1,0 +1,44 @@
+model 1: 
+input: Observation X
+output: DoAs theta 
+        Sensor perturbation delta_x, delta_y
+
+model 2:
+input: Observation X Sensor perturbation delta_x, delta_y
+output: DoAs theta
+
+model 3:
+input: Observation X
+output: DoAs theta
+
+########## Benchmark Results ##########
+
+SNR=0
+model 1: 0.07135139126330614
+model 2: 0.0877103682141751
+model 3: 0.0683275694027543
+
+SNR=5
+model 1: 0.06976923136971891
+model 2: 0.08518025209195912
+model 3: 0.06673941493500024
+
+SNR=10
+model 1: 0.06579169281758368
+model 2: 0.08163000899367034
+model 3: 0.06276667374186218
+
+SNR=15
+model 1: 0.06955711194314063
+model 2: 0.08151811407878995
+model 3: 0.06498096324503422
+
+SNR=20
+model 1: 0.06762061722110957
+model 2: 0.08436370803974569
+model 3: 0.0639564588200301
+
+SNR=25
+model 1: 0.06905102671589702
+model 2: 0.08109643612988293
+model 3: 0.0653957404429093
