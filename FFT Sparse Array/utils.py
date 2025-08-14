@@ -57,7 +57,7 @@ class ArrayModelAbstractClass(ABC):
         axes[1].grid(True)
 
         plt.tight_layout()
-        if savename: plt.savefig(savename+".pdf", bbox_inches="tight")
+        if savename: plt.savefig(savename+".pdf", bbox_inches="tight", pad_inches=0)
         plt.show()
 
     def plot_coarray_weight(self, plot3D=False) -> None:
@@ -146,7 +146,9 @@ class ArrayModelAbstractClass(ABC):
             R[pos[1]+fft_vertical_size, pos[0]+fft_horizontal_size] = coarray_covariance[pos]
 
         Rfft = np.abs(fft(fft(R, axis=0), axis=1))
-        if show_fft: plt.imshow(Rfft)
+        if show_fft: 
+            plt.imshow(Rfft)
+            plt.axis('off')
 
         neighborhood = maximum_filter(Rfft, size=3, mode='constant', cval=-np.inf)
         peaks_mask = (Rfft == neighborhood)

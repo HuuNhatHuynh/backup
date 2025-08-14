@@ -1,4 +1,4 @@
-import json, argparse, itertools, concurrent
+import json, argparse, itertools, concurrent.futures
 import numpy as np 
 from tqdm import tqdm
 from utils import *

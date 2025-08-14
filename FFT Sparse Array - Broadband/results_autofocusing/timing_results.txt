@@ -1,0 +1,24 @@
+Ratio of execution time between FFT and MUSIC of Nested Array at 0.0 dB: 38.183969967941174
+Ratio of execution time between FFT and MUSIC of Open Box Array at 0.0 dB: 38.73741014610587
+
+
+Ratio of execution time between FFT and MUSIC of Nested Array at 20.0 dB: 41.40935436896947
+Ratio of execution time between FFT and MUSIC of Open Box Array at 20.0 dB: 39.854990831907415
+
+
+Ratio of execution time between FFT and MUSIC of Nested Array at 5.0 dB: 40.77517850794469
+Ratio of execution time between FFT and MUSIC of Open Box Array at 5.0 dB: 38.865546236671285
+
+
+Ratio of execution time between FFT and MUSIC of Nested Array at 15.0 dB: 40.69214329075778
+Ratio of execution time between FFT and MUSIC of Open Box Array at 15.0 dB: 38.19615588976261
+
+
+Ratio of execution time between FFT and MUSIC of Nested Array at 10.0 dB: 41.97656851691427
+Ratio of execution time between FFT and MUSIC of Open Box Array at 10.0 dB: 41.33392130126475
+
+
+Ratio of execution time between FFT and MUSIC of Nested Array at 25.0 dB: 41.32565649237466
+Ratio of execution time between FFT and MUSIC of Open Box Array at 25.0 dB: 40.36154797002892
+
+
